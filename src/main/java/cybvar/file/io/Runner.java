@@ -17,8 +17,11 @@ public class Runner {
     public static void main(String... args){
         try{
             
-            
             //FileMgr.decodeFile(new File("temp/encdes/src"), new File("temp/decdes"), "txt");
+            //FileMgr.decodeFile(new File("temp/encdes/src"), new File("temp/decdes"), "txt");
+            
+            SimpleIO.encodeFile(new File("temp/CmdAgent.java"), new File("temp/CmdAgent.enc"));
+            SimpleIO.decodeFile(new File("temp/CmdAgent.enc"), new File("temp/CmdAgent.dec"));
         }catch(Exception ex){
             ex.printStackTrace();
         }

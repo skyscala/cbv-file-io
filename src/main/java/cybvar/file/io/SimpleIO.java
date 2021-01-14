@@ -7,13 +7,12 @@ package cybvar.file.io;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 /**
  *
@@ -27,11 +26,23 @@ public class SimpleIO {
     
     
     public static void encodeFile(File src,File des)throws IOException{
-        byte[] bytes;
+       
+        int offset=0;
+        List<Byte> list=new ArrayList<>();
         try(BufferedInputStream bis=new BufferedInputStream(new FileInputStream(src))){
-            bytes=bis.readAllBytes();
+            byte[] bytes=new byte[10240];
+            while((offset=bis.read(bytes, 0, bytes.length))!=-1){
+                for(int i=0;i<offset;i++){
+                    list.add(bytes[i]);
+                }
+            }
         }
-        byte[] decodedBytes=Base64.encodeBase64URLSafeString(bytes).getBytes();
+        byte[] bytesRead=new byte[list.size()];
+        for(int i=0;i<bytesRead.length;i++){
+            bytesRead[i]=list.get(i);
+        }
+        
+        byte[] decodedBytes=Base64.encodeBase64URLSafeString(bytesRead).getBytes();
         try(BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(des))){
             bos.write(decodedBytes);
         }     
@@ -39,12 +50,21 @@ public class SimpleIO {
     
     public static void decodeFile(File src,File des)throws IOException{
        
-        byte[] bytes;
+        int offset=0;
+        List<Byte> list=new ArrayList<>();
         try(BufferedInputStream bis=new BufferedInputStream(new FileInputStream(src))){
-            bytes=bis.readAllBytes();
+            byte[] bytes=new byte[10240];
+            while((offset=bis.read(bytes, 0, bytes.length))!=-1){
+                for(int i=0;i<offset;i++){
+                    list.add(bytes[i]);
+                }
+            }
         }
-        
-        byte[] decodedBytes=Base64.decodeBase64(bytes);
+        byte[] bytesRead=new byte[list.size()];
+        for(int i=0;i<bytesRead.length;i++){
+            bytesRead[i]=list.get(i);
+        }
+        byte[] decodedBytes=Base64.decodeBase64(bytesRead);
         try(BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(des))){
             bos.write(decodedBytes);
         }
